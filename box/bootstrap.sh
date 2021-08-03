@@ -41,31 +41,7 @@ ensure_docker() {
     fi
 }
 
-ensure_sops() {
-    if ! sops --version; then
-        # shellcheck disable=SC2094
-        docker run --rm --entrypoint cat jonoh/sops /usr/local/bin/sops >/usr/local/bin/sops
-        chmod +x /usr/local/bin/sops
-    fi
-}
-
-compose_up() {
-    COMPOSE_DIR="/home/$MAIN_USER/compose"
-    if [ ! -d "$COMPOSE_DIR" ]; then
-        git clone "$1" "$COMPOSE_DIR"
-    fi
-    cd "$COMPOSE_DIR"
-    git pull
-    echo "$2" >key.txt
-    SOPS_AGE_KEY_FILE=key.txt sops exec-env secrets.enc.env 'docker-compose up -d'
-    rm key.txt
-    cd -
-}
-
 # The arguments here must be interpolated by terraform
 # shellcheck disable=SC2154
 set_ssh_key "${ssh_key}"
 ensure_docker
-ensure_sops
-# shellcheck disable=SC2154
-compose_up "${compose_repo}" "${compose_sops_key}"

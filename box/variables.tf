@@ -17,9 +17,3 @@ variable "hdd" {
 }
 
 variable "ssh_key" {}
-
-variable "compose_repo" {}
-
-variable "compose_sops_key" {
-  sensitive = true
-}

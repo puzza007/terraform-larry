@@ -87,8 +87,6 @@ resource "oci_core_instance" "instance" {
   metadata = {
     user_data = base64encode(templatefile("${path.module}/bootstrap.sh", {
       ssh_key          = var.ssh_key,
-      compose_sops_key = var.compose_sops_key,
-      compose_repo     = var.compose_repo
     }))
   }
 

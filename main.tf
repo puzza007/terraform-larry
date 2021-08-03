@@ -15,8 +15,6 @@ module "box" {
 
   compartment_id   = local.oci_tenancy_id
   ssh_key          = var.ssh_key
-  compose_repo     = var.compose_repo
-  compose_sops_key = var.compose_sops_key
 }
 
 output "ip" {

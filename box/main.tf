@@ -45,7 +45,7 @@ resource "oci_core_subnet" "subnet" {
   cidr_block          = "10.1.20.0/24"
   display_name        = "${var.name}_subnet"
   dns_label           = var.name
-  security_list_ids   = [oci_core_vcn.vcn.default_security_list_id]
+  security_list_ids   = [oci_core_vcn.vcn.default_security_list_id, oci_core_security_list.web.id]
   compartment_id      = var.compartment_id
   vcn_id              = oci_core_vcn.vcn.id
   route_table_id      = oci_core_vcn.vcn.default_route_table_id
@@ -104,4 +104,22 @@ resource "oci_core_volume_attachment" "data_volume_attachment" {
   attachment_type = "paravirtualized"
   instance_id = resource.oci_core_instance.instance.id
   volume_id = resource.oci_core_volume.data_volume.id
+}
+
+resource "oci_core_security_list" "web" {
+  compartment_id = var.compartment_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "web"
+
+  ingress_security_rules {
+    protocol  = "6"
+    source    = "0.0.0.0/0"
+    stateless = true
+
+    tcp_options {
+      min = "443"
+      max = "443"
+    }
+  }
+
 }
